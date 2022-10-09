@@ -5,6 +5,10 @@ const cheerio = require("cheerio");
 const { dbName, dbUrl, mongodb, MongoClient } = require("../Configdb");
 const client = new MongoClient(dbUrl);
 
+
+router.get('/', function(req, res, next) {
+  res.send(' Welcome to WebScrapping.  Server Running Perfectly');
+});
 router.post("/flip", async (req, res) => {
   await client.connect();
   try {
