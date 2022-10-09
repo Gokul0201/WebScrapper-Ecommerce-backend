@@ -143,7 +143,7 @@ router.get("/getdata", async (req, res) => {
   client.connect();  
   try {    
     const db = client.db(dbName);
-    let results = await db.collection("ScrapedData").find().toArray();
+    let results = await db.collection("scrapeddata").find().toArray();
     res.send({
       statusCode: 200,
       results
