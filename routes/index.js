@@ -9,76 +9,76 @@ const client = new MongoClient(dbUrl);
 router.get('/', function(req, res, next) {
   res.send(' Welcome to WebScrapping.  Server Running Perfectly');
 });
-router.post("/flip", async (req, res) => {
-  await client.connect();
-  try {
-    const fetchData = await axios.get(
-      `https://www.flipkart.com/search?q=iphone&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off`
-    );
-    const db = await client.db(dbName);
-    const $ = cheerio.load(fetchData.data);
-    const productsArray = $("._1YokD2 ._1AtVbE ").toArray();
-    console.log(productsArray);
-    let results = productsArray
-      .map((n) => {
-        let temp = cheerio.load(n);
-        return {
-          name: temp("._4rR01T").text(),
-          pageURL: temp("._1fQZEK").attr("href"),
-        };
-      })
-      .filter((n) => n.name && n.name != "");
-    results.length = 12;
-    await db.collection("Flip").insertMany(results);
-    res.send({
-      statusCode: 200,
-      results,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      statusCode: 400,
-    });
-  } finally {
-    client.close();
-  }
-});
-router.post("/snap", async (req, res) => {
-  client.connect();
-  try {
-    const fetchData = await axios.get(
-      `https://www.snapdeal.com/products/electronics-headphones?sort=plrty#bcrumbSearch:samsung%20android%20phone`
-    );
-    const db = await client.db(dbName);
-    const $ = cheerio.load(fetchData.data);
-    const productsArray = $(".product-desc-rating").toArray();
-    // console.log(productsArray);
-    let results = productsArray
-    .map((n) => {
-      let temp = cheerio.load(n);
-      return {
-        name: temp(".product-title").text(),
-        pageURL: temp(".dp-widget-link").attr("href"),
-      };
-    })
-    results.length = 12;
-    await db.collection("snap").insertMany(results);
-    res.send({
-      statusCode: 200,
-      link: results
-    });
-  } catch (error) {
-    console.log("error");
-    res.send({
-      statusCode: 400,
-    });
-  } finally {
-    client.close();
-  }
-});
+// router.post("/flip", async (req, res) => {
+//   await client.connect();
+//   try {
+//     const fetchData = await axios.get(
+//       `https://www.flipkart.com/search?q=iphone&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off`
+//     );
+//     const db = await client.db(dbName);
+//     const $ = cheerio.load(fetchData.data);
+//     const productsArray = $("._1YokD2 ._1AtVbE ").toArray();
+//     console.log(productsArray);
+//     let results = productsArray
+//       .map((n) => {
+//         let temp = cheerio.load(n);
+//         return {
+//           name: temp("._4rR01T").text(),
+//           pageURL: temp("._1fQZEK").attr("href"),
+//         };
+//       })
+//       .filter((n) => n.name && n.name != "");
+//     results.length = 12;
+//     await db.collection("Flip").insertMany(results);
+//     res.send({
+//       statusCode: 200,
+//       results,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.send({
+//       statusCode: 400,
+//     });
+//   } finally {
+//     client.close();
+//   }
+// });
+// router.post("/snap", async (req, res) => {
+//   client.connect();
+//   try {
+//     const fetchData = await axios.get(
+//       `https://www.snapdeal.com/products/electronics-headphones?sort=plrty#bcrumbSearch:samsung%20android%20phone`
+//     );
+//     const db = await client.db(dbName);
+//     const $ = cheerio.load(fetchData.data);
+//     const productsArray = $(".product-desc-rating").toArray();
+//     // console.log(productsArray);
+//     let results = productsArray
+//     .map((n) => {
+//       let temp = cheerio.load(n);
+//       return {
+//         name: temp(".product-title").text(),
+//         pageURL: temp(".dp-widget-link").attr("href"),
+//       };
+//     })
+//     results.length = 12;
+//     await db.collection("snap").insertMany(results);
+//     res.send({
+//       statusCode: 200,
+//       link: results
+//     });
+//   } catch (error) {
+//     console.log("error");
+//     res.send({
+//       statusCode: 400,
+//     });
+//   } finally {
+//     client.close();
+//   }
+// });
 
-router.post("/postdata", async (req, res) => {
-// setInterval(async () => {
+// router.post("/postdata", async (req, res) => {
+setInterval(async () => {
   await client.connect();
   try {
     const db = client.db(dbName);
@@ -122,22 +122,21 @@ router.post("/postdata", async (req, res) => {
     for (let e of Result) {
       await db.collection("scrapeddata").updateOne({Name_String:`${e.Name_String}`}, {$set:{Final_Price:`${e.Final_Price}`}});
     }    
-    await db.collection("scrapeddata").insertMany(Result);
-    res.send({
-      statusCode: 200,
-      Result
-    });
+    // await db.collection("scrapeddata").insertMany(Result);
+    // res.send({
+    //   statusCode: 200,
+    //   Result
+    // });
     console.log("data updated successfully");
   } catch (error) {
     console.log(error);
-    res.send({
-      statusCode: 400,
-    });
+    // res.send({
+    //   statusCode: 400,
+    // });
   } finally {
     client.close();
   }  
-});
-// 43200000
+} ,43200000);
 
 router.get("/getdata", async (req, res) => {
   client.connect();  
