@@ -3,7 +3,7 @@ var router = express.Router();
 var dotenv=require('dotenv').config();
 const jwt=require('jsonwebtoken');
 const bcryptjs=require('bcryptjs');
-const secret=process.env.JWTsecretKey;
+const secret=process.env.JWTSECRETKEY;
 const { dbName, dbUrl, mongodb, MongoClient } = require("../Configdb");
 const client = new MongoClient(dbUrl);
 
@@ -57,7 +57,7 @@ router.post('/login', async(req, res)=> {
           statusCode: 200,
           message:"User Logged in Successfully",
           token,
-          hashResult,
+          hashResult
         
         })
       }
