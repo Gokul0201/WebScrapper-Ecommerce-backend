@@ -83,7 +83,7 @@ setInterval(async () => {
   try {
     const db = client.db(dbName);
     let Flip_urlData = await db.collection("Flip").find().limit(12).toArray();
-    let Snap_urlData = await db.collection("snap").find().limit(12).toArray();
+    let Snap_urlData = await db.collection("snap").find().skip(12).limit(12).toArray();
     let Result = [];
     for (let e of Flip_urlData) {
       let temp = await axios.get(`https://www.flipkart.com${e.pageURL}`);
@@ -154,7 +154,7 @@ router.get("/getdata", async (req, res) => {
     });    
   }
   finally{
-    client.close();
+    // client.close();
   }
 })
 
